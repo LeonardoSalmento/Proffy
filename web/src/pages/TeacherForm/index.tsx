@@ -1,5 +1,5 @@
 import React, { useState, FormEvent} from 'react';
-
+import { useHistory } from 'react-router-dom';
 import PageHeader from '../../components/PageHeader';
 import Input from '../../components/Input';
 import warningIcon from '../../assets/images/icons/warning.svg'
@@ -21,6 +21,8 @@ function TeacherForm() {
     const [scheduleItems, setScheduleItems] = useState([
         { week_day:0, from: '', to:''}
     ]);
+
+    const history = useHistory();
     
 
     function addNewScheduleItem(){
@@ -54,9 +56,11 @@ function TeacherForm() {
             schedule: scheduleItems
 
         }).then(()=>{
-            alert("Cadastro Realizado com sucesso!")
+            alert("Cadastro Realizado com sucesso!");
+
+            history.push('/');
         }).catch(()=>{
-            alert("Erro no cadastro!")
+            alert("Erro no cadastro!");
         })
         
        

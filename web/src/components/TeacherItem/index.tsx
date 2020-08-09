@@ -3,32 +3,56 @@ import React from 'react';
 import whatsappIcon from '../../assets/images/icons/whatsapp.svg';
 
 import './styles.css'
+import api from '../../services/api';
 
-function TeacherItem(){
+export interface Teacher{
+    id: number;
+    avatar: string;
+    bio: string;
+    cost: number;
+    name: string;
+    subject: string;
+    whatsapp: string;
+}
+
+interface TeacherItemProps{
+    teacher: Teacher;
+}
+
+const TeacherItem: React.FC<TeacherItemProps> = ({ teacher }) => {
+    function createNewConnection() {
+        api.post('connections', {
+          user_id: teacher.id
+        });
+    }
+
     return (
         <article className="teacher-item">
             <header>
-                <img alt="professor" src="https://scontent.fthe12-1.fna.fbcdn.net/v/t1.0-9/10610643_10152745958228604_2645424344977063553_n.png?_nc_cat=104&_nc_sid=09cbfe&_nc_ohc=z8NJHPIPEtoAX8ETCwr&_nc_ht=scontent.fthe12-1.fna&oh=ba7bb7cc7b64dea7a79396715257c2eb&oe=5F4DE002"/>
+                <img alt={teacher.name} src={teacher.avatar}/>
                 <div>
-                    <strong>Albert Einstein</strong>
-                    <span>Química</span>
+                    <strong>{teacher.name}</strong>
+                    <span>{teacher.subject}</span>
                 </div>
             </header>
             <p>
-                Entusiasta das melhores tecnologias de química avançada
-                <br/><br/>
-                Aqui tem mais um bucado de texto referente a química e tals.
+            {teacher.bio}
             </p>
 
             <footer>
                 <p>
                     Preço/Hora
-                    <strong>R$80,00</strong>
+                    <strong>R$ {teacher.cost}</strong>
                 </p>
-                <button type="button">
-                    <img src={whatsappIcon} alt="whatsapp" />
+                <a
+                    onClick={createNewConnection}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                    href={`https://wa.me/${teacher.whatsapp}`}
+                    >
+                    <img src={whatsappIcon} alt="Whatsapp"/>
                     Entrar em contato
-                </button>
+                </a>
             </footer>
         </article>
     )
