@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, ScrollView, TextInput, Text } from 'react-native';
+import { View, ScrollView, TextInput, Text, AsyncStorage } from 'react-native';
 
 import PageHeader from '../../components/PageHeader';
 import TeacherItem, { Teacher } from '../../components/TeacherItem';
@@ -8,14 +8,33 @@ import { Feather } from '@expo/vector-icons';
 
 import styles from './styles';
 import api from '../../services/api';
+import { useFocusEffect } from '@react-navigation/native';
 
 function TeacherList() {
   const [teachers, setTeachers] = useState([]);
   const [isFiltersVisible, setIsFiltersVisible] = useState(false);
+  const [favorites, setFavorites] = useState<number[]>([]);
 
   const [subject, setSubject] = useState('Matemática');
-  const [week_day, setWeekDay] = useState('3');
+  const [week_day, setWeekDay] = useState('2');
   const [time, setTime] = useState('9:00');
+
+  function loadFavorites() {
+    AsyncStorage.getItem('favorites').then(response => {
+      if (response) {
+        const favoritedTeachers = JSON.parse(response);
+        const favoritedTeachersIds = favoritedTeachers.map((teacher: Teacher) => {
+          return teacher.id;
+        });
+
+        setFavorites(favoritedTeachersIds);
+      }
+    });
+  }
+
+  useFocusEffect(() => {
+    loadFavorites();
+  })
 
   function handleToggleFiltersVisible() {
     setIsFiltersVisible(!isFiltersVisible);
@@ -96,7 +115,7 @@ function TeacherList() {
             <TeacherItem
               key={teacher.id}
               teacher={teacher}
-              
+              favorited={favorites.includes(teacher.id)}
             />
           );
         })}
